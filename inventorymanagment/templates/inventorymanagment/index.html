@@ -1,0 +1,18 @@
+{% extends './layout.html' %}
+{% block body %}
+  <h1>inventory</h1>
+    <table border="1">
+  <tr>
+    {% for key,value in inventory.0.items %}
+      <th>{{ key }}</th>
+    {% endfor %}
+  </tr>
+  {% for item in inventory %}
+    <tr>
+      {% for key,value in item.items %}
+        <td>{{ value }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

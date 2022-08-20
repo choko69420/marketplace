@@ -12,6 +12,18 @@ class Inventory(models.Model):
     def __str__(self):
         return f"{self.name} remaining: {self.remaining} sold: {self.sold} price(for 1): {self.price}"
 
+    # returns a dictionary of the fieldnames and values
+    def as_dict(self) -> dict:
+        """
+            Returns a dictionary of the fieldnames and values
+        """
+        return {
+            'name': self.name,
+            'remaining': self.remaining,
+            'sold': self.sold,
+            'price': self.price,
+        }
+
 
 class Sales(models.Model):
     name = models.CharField(max_length=100)
