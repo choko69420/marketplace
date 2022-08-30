@@ -1,0 +1,10 @@
+{% extends './layout.html' %}
+
+{% block body %}
+    <form method="POST" action={% url 'login' %}>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p>{{error}}</p>
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}

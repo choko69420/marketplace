@@ -1,9 +1,18 @@
 {% extends './layout.html' %}
 {% block body %}
-  <h1>inventory and sales</h1>
-  <a href={% url 'create_sales' %}>add sale</a>
+<h1>inventory and sales</h1>
+{%if user.is_authenticated %}
+<h2> you are admin </h2>
+<a href={% url 'delete_sale' %}>delete sale</a>
+<a href={% url 'delete_inventory' %}>delete inventory</a>
+<a href={% url 'logout' %}>logout</a>
+{% else %}
+<h2> you are not admin </h2>
+{% endif %}
+  <a href={% url 'add_sale' %}>add sale</a>
   {% comment %} TODO check if admin {% endcomment %}
   <a href={% url 'add_inventory' %}>add to inventory</a>
+  <a href={% url 'login' %}>Login</a>
   <div>
     <table border="1">
   <tr>

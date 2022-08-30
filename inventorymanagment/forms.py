@@ -76,3 +76,36 @@ class SalesForm(ModelForm):
             raise forms.ValidationError(
                 "You can't sell more than you have")
         return cleaned_data
+
+
+class DeleteSalesForm(forms.Form):
+    id = forms.ChoiceField(label='Sale', choices=[
+        (i.id, i) for i in Sales.objects.all()])
+
+    def clean_id(self):
+        id = int(self.cleaned_data.get('id'))
+        if id < 1:
+            raise forms.ValidationError('ID cannot be negative')
+        # check if id in database
+        if id not in Sales.objects.all().values_list('id', flat=True):
+            raise forms.ValidationError('ID not in database')
+        return id
+
+
+class DeleteInventoryForm(forms.Form):
+    id = forms.ChoiceField(label='Item', choices=[
+                           (i.id, i) for i in Inventory.objects.all()])
+
+    def clean_id(self):
+        id = int(self.cleaned_data.get('id'))
+        if id < 1:
+            raise forms.ValidationError('ID cannot be negative')
+        # check if id in database
+        if id not in Inventory.objects.all().values_list('id', flat=True):
+            raise forms.ValidationError('ID not in database')
+        return id
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)

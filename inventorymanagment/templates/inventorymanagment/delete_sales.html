@@ -1,0 +1,10 @@
+{% extends './layout.html' %}
+
+{% block body %}
+    <form method="POST" action={% url 'delete_sale' %}>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Delete</button>
+    </form>
+
+{% endblock %}

@@ -3,7 +3,7 @@
 {% block body %}
 <a href={% url 'index' %}>Home</a>
 <br/>
-<form method="post" action="{% url 'create_sales' %}">
+<form method="post" action="{% url 'add_sale' %}">
     {% csrf_token %}
 {{ form.as_p }}
 <input type="submit" />
