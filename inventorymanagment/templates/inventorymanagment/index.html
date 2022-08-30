@@ -1,6 +1,10 @@
 {% extends './layout.html' %}
 {% block body %}
-  <h1>inventory</h1>
+  <h1>inventory and sales</h1>
+  <a href={% url 'create_sales' %}>add sale</a>
+  {% comment %} TODO check if admin {% endcomment %}
+  <a href={% url 'add_inventory' %}>add to inventory</a>
+  <div>
     <table border="1">
   <tr>
     {% for key,value in inventory.0.items %}
@@ -15,4 +19,19 @@
     </tr>
   {% endfor %}
 </table>
+<table border="1">
+  <tr>
+    {% for key,value in sales.0.items %}
+      <th>{{ key }}</th>
+    {% endfor %}
+  </tr>
+  {% for item in sales %}
+    <tr>
+      {% for key,value in item.items %}
+        <td>{{ value }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+</div>
 {% endblock %}

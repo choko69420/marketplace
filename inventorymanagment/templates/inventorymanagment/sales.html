@@ -1,0 +1,11 @@
+{% extends './layout.html' %}
+
+{% block body %}
+<a href={% url 'index' %}>Home</a>
+<br/>
+<form method="post" action="{% url 'create_sales' %}">
+    {% csrf_token %}
+{{ form.as_p }}
+<input type="submit" />
+</form>
+{% endblock %}

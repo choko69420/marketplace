@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.db import models
 
 # Create your models here.
@@ -6,30 +7,18 @@ from django.db import models
 class Inventory(models.Model):
     name = models.CharField(max_length=100)
     remaining = models.IntegerField()
-    sold = models.IntegerField()
+    sold = models.IntegerField(default=0)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
-        return f"{self.name} remaining: {self.remaining} sold: {self.sold} price(for 1): {self.price}"
-
-    # returns a dictionary of the fieldnames and values
-    def as_dict(self) -> dict:
-        """
-            Returns a dictionary of the fieldnames and values
-        """
-        return {
-            'name': self.name,
-            'remaining': self.remaining,
-            'sold': self.sold,
-            'price': self.price,
-        }
+        return f"{self.name}"
 
 
 class Sales(models.Model):
-    name = models.CharField(max_length=100)
+    item = models.ForeignKey(
+        Inventory, related_name='sales', on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
     day = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} quantity: {self.quantity} price: {self.price} day: {self.day}"
+        return f"{self.item.name} quantity: {self.quantity} price: {self.item.price} day: {self.day}"
