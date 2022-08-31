@@ -1,6 +1,7 @@
 {% extends './layout.html' %}
 
 {% block body %}
+    <a href={% url 'index' %}> Home </a>
     <form method="POST" action={% url 'delete_sale' %}>
         {% csrf_token %}
         {{ form.as_p }}

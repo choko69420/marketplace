@@ -78,18 +78,51 @@ class SalesForm(ModelForm):
         return cleaned_data
 
 
-class DeleteSalesForm(forms.Form):
-    id = forms.ChoiceField(label='Sale', choices=[
-        (i.id, i) for i in Sales.objects.all()])
+class DeleteSalesForm(ModelForm):
+    class Meta:
+        model = Sales
+        fields = ['id']
+        labels = {
+            'id': 'Sale',
+        }
 
     def clean_id(self):
         id = int(self.cleaned_data.get('id'))
-        if id < 1:
+        print('id', id)
+        if id <= 0:
             raise forms.ValidationError('ID cannot be negative')
+        print('id > 0', id)
         # check if id in database
         if id not in Sales.objects.all().values_list('id', flat=True):
             raise forms.ValidationError('ID not in database')
+        print("id in database", id)
         return id
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['id'] = forms.ChoiceField(
+            label="Sale", choices=[(i.id, i) for i in Sales.objects.all()], required=True)
+
+    def delete_sale(self):
+        id = self.cleaned_data.get('id')
+        print('id', id)
+        sale = Sales.objects.get(id=id)
+        print('sale', sale)
+        item = sale.item
+        print('item', item)
+        item.remaining += sale.quantity
+        item.sold -= sale.quantity
+        item.save()
+        sale.delete()
+        return True
+
+    def validate_unique(self) -> None:
+        print("validate_unique")
+        return super().validate_unique()
+
+    def validate_constraints(self) -> None:
+        print("validate_constraints")
+        return super().validate_constraints()
 
 
 class DeleteInventoryForm(forms.Form):

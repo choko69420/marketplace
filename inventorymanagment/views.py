@@ -2,17 +2,21 @@ from django.shortcuts import render, redirect
 from .models import Inventory, Sales
 from .forms import InventoryForm, SalesForm, LoginForm, DeleteSalesForm, DeleteInventoryForm
 from django.contrib.auth import authenticate, login, logout
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
-def index(request):
-    # create a dictionary to pass to the template engine as its context
-    # key will be the name of the field in the template
-    # value will be the data for that field
-    context = {
-        'inventory': Inventory.objects.all().values(),
-        'sales': Sales.objects.all().values(),
-    }
-    return render(request, 'inventorymanagment/index.html', context)
+class indexView(ListView):
+    model = Inventory
+    template_name = 'inventorymanagment/index.html'
+    context_object_name = 'inventory, sales'
+    ordering = ['-id']
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sales'] = Sales.objects.all().values()
+        context['inventory'] = Inventory.objects.all().values()
+        return context
 
 
 def add_sales(request):
@@ -47,17 +51,11 @@ def delete_sales(request):
         return redirect('/login')
     if request.method == 'GET':
         form = DeleteSalesForm()
+        print("GET")
         return render(request, 'inventorymanagment/delete_sales.html', {'form': form})
     form = DeleteSalesForm(request.POST)
     if form.is_valid():
-        id = form.cleaned_data.get('id')
-        sale = Sales.objects.get(id=id)
-        item = sale.item
-        quantity = sale.quantity
-        item.remaining += quantity
-        item.sold -= quantity
-        item.save()
-        sale.delete()
+        form.delete_sale()
         # redirect
         return redirect('/')
     else:
