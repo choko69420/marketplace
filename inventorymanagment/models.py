@@ -15,11 +15,10 @@ class Inventory(models.Model):
 
 
 class Sales(models.Model):
-    item = models.OneToOneField(
-        Inventory, related_name='sales', on_delete=models.DO_NOTHING)
+    item = models.ForeignKey(
+        Inventory, related_name='sales', on_delete=models.CASCADE)
     quantity = models.IntegerField()
     day = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"id: {self.id}, {self.item.name} quantity: {self.quantity} price: {self.item.price} day: {self.day}"
-    # handle deletion

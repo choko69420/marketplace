@@ -15,6 +15,12 @@ class indexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['sales'] = Sales.objects.all().values()
+        # turn context item_id into item name
+        for sale in context['sales']:
+            sale['item_id'] = Inventory.objects.get(id=sale['item_id']).name
+        # change item_id key into item name key
+        context['sales'] = [{'id': sale['id'], 'item_name': sale['item_id'], 'quantity': sale['quantity'],
+                             'day': sale['day']} for sale in context['sales']]
         context['inventory'] = Inventory.objects.all().values()
         return context
 

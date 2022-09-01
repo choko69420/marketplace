@@ -116,27 +116,39 @@ class DeleteSalesForm(ModelForm):
         sale.delete()
         return True
 
-    def validate_unique(self) -> None:
-        print("validate_unique")
-        return super().validate_unique()
 
-    def validate_constraints(self) -> None:
-        print("validate_constraints")
-        return super().validate_constraints()
-
-
-class DeleteInventoryForm(forms.Form):
-    id = forms.ChoiceField(label='Item', choices=[
-                           (i.id, i) for i in Inventory.objects.all()])
+class DeleteInventoryForm(ModelForm):
+    class Meta:
+        model = Inventory
+        fields = ['id']
+        labels = {
+            'id': 'Item',
+        }
 
     def clean_id(self):
         id = int(self.cleaned_data.get('id'))
-        if id < 1:
+        print('id', id)
+        if id <= 0:
             raise forms.ValidationError('ID cannot be negative')
+        print('id > 0', id)
         # check if id in database
         if id not in Inventory.objects.all().values_list('id', flat=True):
             raise forms.ValidationError('ID not in database')
+        print("id in database", id)
         return id
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['id'] = forms.ChoiceField(
+            label="Item", choices=[(i.id, i) for i in Inventory.objects.all()], required=True)
+
+    def delete_item(self):
+        id = self.cleaned_data.get('id')
+        print('id', id)
+        item = Inventory.objects.get(id=id)
+        print('item', item)
+        item.delete()
+        return True
 
 
 class LoginForm(forms.Form):
